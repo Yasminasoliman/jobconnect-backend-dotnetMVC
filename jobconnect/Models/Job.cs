@@ -6,10 +6,10 @@ namespace jobconnect.Models
     public class Job
     {
         [Key]
-        public int Id { get; set; }
+        public int JobId { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(50)] //max length of 50 characters
         public string Job_title { get; set; }
         public string Job_description { get; set;}
 
@@ -36,13 +36,13 @@ namespace jobconnect.Models
         [Required]
         public bool Accepted_by_admin { get; set; } = false;
 
-        
-        [ForeignKey("User")]
-        public int UserId { get; set; } // Employee_id
-        public User User { get; set; } // navigation to employee (owner of job)
+
+        [ForeignKey("Employer")]
+        public int EmpId { get; set; } // Employer_id
+        public Employer Employer { get; set; } // navigation to employer (owner of job)
 
         public ICollection<Proposal> Proposal { get; set; }  // list of proposals for a particular job
 
-
+        public ICollection<SavedJobs> SavedJobs { get; set; }
     }
 }

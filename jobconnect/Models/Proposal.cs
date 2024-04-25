@@ -9,8 +9,8 @@ namespace jobconnect.Models
         //JobId is ForeignKey
         //UserId + JobId are composite primary key
         // This relation is set on DataContext class
-        public int UserId { get; set; }
-        public User? User { get; set; } //navigation to jobseeker (The person that applied for the job)
+        public int JobSeekerId { get; set; }
+        public JobSeeker? JobSeeker { get; set; } //navigation to jobseeker (The person that applied for the job)
 
         public int JobId { get; set; }
         public Job? Job { get; set; } //navigation to Job (That is applied for)
