@@ -42,5 +42,32 @@ namespace jobconnect.Data
         {
             return await _db.SaveChangesAsync() > 0;
         }
+
+
+
+
+/*        public async Task<bool> AcceptJobPost(int jobId)
+        {
+            var jobPost = await _db.JobPosts.FindAsync(jobId);
+            if (jobPost != null)
+            {
+                jobPost.Status = JobPostStatus.Accepted;
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> RejectJobPost(int jobId)
+        {
+            var jobPost = await _db.JobPosts.FindAsync(jobId);
+            if (jobPost != null)
+            {
+                jobPost.Status = JobPostStatus.Rejected;
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }*/
     }
 }

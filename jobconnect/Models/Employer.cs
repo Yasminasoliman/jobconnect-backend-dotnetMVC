@@ -6,7 +6,8 @@ namespace jobconnect.Models
     public class Employer
     {
         [Key]
-        [ForeignKey("User")]
+        [ForeignKey("User")]     
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int EmployerId { get; set; }
 
         public User User { get; set; } //navigation to user
