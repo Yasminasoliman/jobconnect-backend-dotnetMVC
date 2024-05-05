@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace jobconnect.Dtos
 {
     public class EmployerDto
