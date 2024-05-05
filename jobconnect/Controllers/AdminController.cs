@@ -177,7 +177,7 @@ namespace jobconnect.Controllers
                 await _jobRepository.UpdateAsync(job);
                 await _jobRepository.Save();
 
-                return Ok("Job refused successfully");
+                return Ok("Job Refused successfully");
         }
 
 
