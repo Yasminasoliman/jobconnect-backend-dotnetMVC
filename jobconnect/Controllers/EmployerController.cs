@@ -16,7 +16,7 @@ namespace jobconnect.Controllers
         {
             _jobRepository = jobRepository;
         }
-  /*********************************************************** CreateJobPost **********************************************************/
+  /*********************************************************** -CreateJobPost **********************************************************/
         [HttpPost("CreateJobPost")]
         public async Task<IActionResult> PostJob(JobDto jobDto)
         {
