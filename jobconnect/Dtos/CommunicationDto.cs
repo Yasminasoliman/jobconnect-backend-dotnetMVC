@@ -1,4 +1,5 @@
 ﻿namespace jobconnect.Dtos
+ 
 {
     namespace jobconnect.DTOs
     {
