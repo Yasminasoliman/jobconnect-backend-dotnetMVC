@@ -43,7 +43,7 @@ namespace jobconnect.Controllers
         {
             //if user in data already
             if (await _authRepository.UserExist(userDto.Email))
-                return BadRequest("User already exists");
+                return BadRequest("User already Exists");
             //else
             var CreateUser = new User
             {
