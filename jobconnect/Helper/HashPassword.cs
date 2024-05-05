@@ -8,6 +8,7 @@ namespace jobconnect.Helper
     public static class HashPassword
     {
             // Method to generate a random password
+        
             public static string GenerateRandomPassword(int length = 8)
             {
                 const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
