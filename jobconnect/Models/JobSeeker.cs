@@ -20,8 +20,8 @@ namespace jobconnect.Models
 
         public int gender { get; set; }
 
-        [Required]
-        public string phone { get; set; }
+
+        public string? phone { get; set; }
 
         public ICollection<Proposal> Proposal { get; set; }  // list of proposals for a particular job seeker
 
