@@ -36,7 +36,41 @@ namespace jobconnect.Controllers
             return Ok(new{token});
         }
 
-  /*********************************************************** Register **********************************************************/
+        /*********************************************************** Register **********************************************************/
+
+        [HttpPost("registeruser")]  // localhost:7163/api/Auth/registeruser
+        public async Task<IActionResult> Register([FromBody] JobSeekerDto jobSeekerForRegisterDto)
+        {
+            if (jobSeekerForRegisterDto == null) return BadRequest();
+
+            jobSeekerForRegisterDto.Email = jobSeekerForRegisterDto.Email.ToLower();
+            if (await _authRepository.UserExist(jobSeekerForRegisterDto.Email))
+            {
+                return BadRequest("Email already exists");
+            }
+
+            var userToCreate = new JobSeeker()
+            {
+                first_name = jobSeekerForRegisterDto.first_name,
+                last_name = jobSeekerForRegisterDto.last_name,
+                latest_certificate = jobSeekerForRegisterDto.latest_certificate,
+                phone = jobSeekerForRegisterDto.phone,
+                gender = jobSeekerForRegisterDto.gender
+            };
+
+            var user = new User()
+            {
+                Username = jobSeekerForRegisterDto.Username,
+                Email = jobSeekerForRegisterDto.Email,
+                UserType = "Job Seeker"
+            };
+            user.JobSeeker = userToCreate;
+
+            await _authRepository.Register(user, jobSeekerForRegisterDto.Password);
+
+            return Ok();
+
+        }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserDto userDto)

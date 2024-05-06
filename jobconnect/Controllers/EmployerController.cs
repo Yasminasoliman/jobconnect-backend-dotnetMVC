@@ -24,7 +24,7 @@ namespace jobconnect.Controllers
             {
                 return BadRequest(ModelState);
             }
-         
+
             var job = new Job
             {
                 Job_title = jobDto.Job_title,
@@ -33,10 +33,11 @@ namespace jobconnect.Controllers
                 location = jobDto.location,
                 industry = jobDto.industry,
                 salary_budget = jobDto.salary_budget,
-                No_of_proposal_submitted = 0,
                 No_of_position_required = jobDto.No_of_position_required,
+                EmpId = jobDto.EmpId,
                 Accepted_by_admin = false,
-                EmpId = jobDto.EmpId 
+                No_of_proposal_submitted = 0,
+                
             };
 
             //current date and time

@@ -1,7 +1,9 @@
 ﻿using jobconnect.Data;
 using jobconnect.Dtos;
 using jobconnect.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 
 //AdminController about Manage employers (CRUD) AND Accept or refuse job posts by Radwa Khaled
@@ -16,11 +18,13 @@ namespace jobconnect.Controllers
         private readonly IDataRepository<User> _userRepository;
         private readonly IDataRepository<Employer> _employerRepository;
         private readonly IDataRepository<Job> _jobRepository;
-        public AdminController(IDataRepository<User> userRepository, IDataRepository<Employer> employerRepository, IDataRepository<Job> jobRepository)
+        private readonly IAuthRepository _authRepository;
+        public AdminController(IDataRepository<User> userRepository, IDataRepository<Employer> employerRepository, IDataRepository<Job> jobRepository, IAuthRepository authRepository)
         {
             _userRepository = userRepository;
             _employerRepository = employerRepository;
             _jobRepository = jobRepository;
+            _authRepository = authRepository;
         }
   /*********************************************************** CreateEmployer **********************************************************/
 
@@ -78,20 +82,44 @@ namespace jobconnect.Controllers
         [HttpGet("GetAllEmployers")]
         public async Task<IActionResult> GetAllEmployers()
         {
-            var employers = await _employerRepository.GetAllAsync();
-            return Ok(employers);
+            IEnumerable<User> users = await _userRepository.GetAllAsync();
+            IEnumerable<ShowEmployerDto> empFullDataList = Enumerable.Empty<ShowEmployerDto>();
+            foreach (User user in users)
+            {
+                if(user.UserType == "Employer")
+                {
+                    ShowEmployerDto empFullData = new ShowEmployerDto();
+                    empFullData.EmployerId = user.UserId;
+                    empFullData.Username = user.Username;
+                    empFullData.Email = user.Email;
+                    Employer emp = await _employerRepository.GetByIdAsync(user.UserId);
+                    empFullData.Company_name = emp.Company_name;
+                    empFullData.Company_description = emp.Company_description;
+                    empFullData.mainaddress = emp.mainaddress;
+                    empFullDataList = empFullDataList.Append(empFullData);
+                }   
+            };
+            return Ok(empFullDataList);
         }
 
   /*********************************************************** GetEmployerById **********************************************************/
         [HttpGet("GetEmployerById/{id}")]
         public async Task<IActionResult> GetEmployerById(int id)
         {
-            var employer = await _employerRepository.GetByIdAsync(id);
-            if (employer == null)
+            User user = await _userRepository.GetByIdAsync(id);
+            Employer employer = await _employerRepository.GetByIdAsync(id);
+            if (employer == null || user == null)
             {
                 return NotFound();
             }
-            return Ok(employer);
+            ShowEmployerDto empFullData = new ShowEmployerDto();
+            empFullData.EmployerId = user.UserId;
+            empFullData.Username = user.Username;
+            empFullData.Email = user.Email;
+            empFullData.Company_name = employer.Company_name;
+            empFullData.Company_description = employer.Company_description;
+            empFullData.mainaddress = employer.mainaddress;
+            return Ok(empFullData);
         }
   /*********************************************************** UpdateEmployerById **********************************************************/
 
@@ -103,20 +131,31 @@ namespace jobconnect.Controllers
                 return BadRequest(ModelState);
             }
 
-            var existingEmployer = await _employerRepository.GetByIdAsync(id);
+            User existinguser = await _userRepository.GetByIdAsync(id);
+            Employer existingEmployer = await _employerRepository.GetByIdAsync(id);
             if (existingEmployer == null)
             {
                 return NotFound();
             }
 
-        
+            employerDto.Email = employerDto.Email.ToLower();
+            if (await _authRepository.UserExist(employerDto.Email))
+            {
+                return BadRequest("Email already exists");
+            }
+            byte[] passwordHash, passwordSalt;
+            CreatePasswordHash(employerDto.Password, out passwordHash, out passwordSalt);
+
+            existinguser.Email = employerDto.Email;
+            existinguser.PasswordHash = passwordHash;
+            existinguser.PasswordSalt = passwordSalt;
             existingEmployer.Company_name = employerDto.Company_name;
             existingEmployer.Company_description = employerDto.Company_description;
             existingEmployer.mainaddress = employerDto.mainaddress;
 
-         
-                // update employer in the database
-                await _employerRepository.UpdateAsync(existingEmployer);
+
+            // update employer in the database
+            await _employerRepository.UpdateAsync(existingEmployer);
                 await _employerRepository.Save();
 
                 return Ok("Employer updated successfully.");
@@ -128,17 +167,18 @@ namespace jobconnect.Controllers
         public async Task<IActionResult> DeleteEmployer(int id)
         {
             var existingEmployer = await _employerRepository.GetByIdAsync(id);
+            User existinguser = await _userRepository.GetByIdAsync(id);
             if (existingEmployer == null)
             {
                 return NotFound();
             }
-
      
-                // delete employer from the database
-                await _employerRepository.DeleteAsync(existingEmployer);
-                await _employerRepository.Save();
+            // delete employer from the database
+            await _employerRepository.DeleteAsync(existingEmployer);
+            await _userRepository.DeleteAsync(existinguser);
+            await _employerRepository.Save();
 
-                return Ok("Employer deleted successfully.");
+            return Ok("Employer deleted successfully.");
         }
 
   /*********************************************************** Accept job posts  **********************************************************/
