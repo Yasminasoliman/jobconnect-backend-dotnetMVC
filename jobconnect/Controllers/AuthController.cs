@@ -15,13 +15,13 @@ namespace jobconnect.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _config;
+    
         private readonly IAuthRepository _authRepository;
 
-        public AuthController(IAuthRepository authRepository, IConfiguration config)
+        public AuthController(IAuthRepository authRepository)
         {
             _authRepository = authRepository;
-            _config = config;
+    
         }
   /*********************************************************** Login **********************************************************/
         [HttpPost("login")]
