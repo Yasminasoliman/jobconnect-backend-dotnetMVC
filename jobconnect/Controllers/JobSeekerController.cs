@@ -5,6 +5,8 @@ using jobconnect.Dtos;
 using jobconnect.Models;
 using jobconnect.Data;
 
+//JobSeekerController about Job Seekers by Radwa Khaled
+
 namespace jobconnect.Controllers
 {
     [Route("api/[controller]")]
