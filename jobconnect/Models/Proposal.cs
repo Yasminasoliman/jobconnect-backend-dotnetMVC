@@ -15,6 +15,7 @@ namespace jobconnect.Models
         public int JobId { get; set; }
         public Job? Job { get; set; } //navigation to Job (That is applied for)
 
+        //updaate Proposal_date in data as DateTime
         [Required]
         public DateTime Proposal_date { get; set; }
         [Required]
