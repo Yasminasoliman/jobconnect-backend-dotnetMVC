@@ -5,6 +5,8 @@ namespace jobconnect.Data
 {
     public class DataContext : DbContext
     {
+        internal readonly object Jobs;
+
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         public DbSet<User> User { get; set; }
 

@@ -17,7 +17,7 @@ namespace jobconnect.Models
         public string Job_type { get; set;} // A field to set if job is (part time, full time,or remote)
 
         [Required]
-        public string Post_creation_date { get; set; }
+        public DateTime Post_creation_date { get; set; }
 
         [Required]
         public string location { get; set; }
@@ -40,6 +40,7 @@ namespace jobconnect.Models
         [ForeignKey("Employer")]
         public int EmpId { get; set; } // Employer_id
         public Employer Employer { get; set; } // navigation to employer (owner of job)
+ 
 
         public ICollection<Proposal> Proposal { get; set; }  // list of proposals for a particular job
 

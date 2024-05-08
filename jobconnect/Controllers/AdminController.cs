@@ -180,8 +180,38 @@ namespace jobconnect.Controllers
 
             return Ok("Employer deleted successfully.");
         }
+        /*********************************************************** GetAllJobs **********************************************************/
 
-  /*********************************************************** Accept job posts  **********************************************************/
+        [HttpGet("GetAllJobs")]
+        public async Task<IActionResult> GetAllJobs()
+        {
+            var jobs = await _jobRepository.GetAllAsync();
+            var jobDtos = new List<JobDto>();
+
+
+            foreach (var job in jobs)
+            {
+                var employer = await _userRepository.GetByIdAsync(job.EmpId);
+                jobDtos.Add(new JobDto
+                {
+                    Job_title = job.Job_title,
+                    Job_description = job.Job_description,
+                    Job_type = job.Job_type,
+                    location = job.location,
+                    industry = job.industry,
+                    salary_budget = job.salary_budget,
+                    No_of_proposal_submitted = job.No_of_proposal_submitted,
+                    No_of_position_required = job.No_of_position_required,
+                    Accepted_by_admin = job.Accepted_by_admin,
+                    Post_creation_date = job.Post_creation_date,
+                    EmpId = job.EmpId,
+                    EmployerName = employer.Username,
+                });
+            }
+
+            return Ok(jobDtos);
+        }
+        /*********************************************************** Accept job posts  **********************************************************/
 
         [HttpPost("accept-job/{jobId}")]
         public async Task<IActionResult> AcceptJob(int jobId)
@@ -206,16 +236,16 @@ namespace jobconnect.Controllers
         [HttpPost("refuse-job/{jobId}")]
         public async Task<IActionResult> RefuseJob(int jobId)
         {
-
                 var job = await _jobRepository.GetByIdAsync(jobId);
                 if (job == null)
                 {
                     return NotFound("Job not found");
                 }
 
-                job.Accepted_by_admin = false;
-                await _jobRepository.UpdateAsync(job);
-                await _jobRepository.Save();
+                job.Accepted_by_admin = false;  
+                 await _jobRepository.UpdateAsync(job);
+                 await _jobRepository.DeleteAsync(job);
+                 await _jobRepository.Save();
 
                 return Ok("Job Refused successfully");
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using jobconnect.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace jobconnect.Data
 {
@@ -22,7 +23,24 @@ namespace jobconnect.Data
         {
             return await table.FindAsync(id);
         }
+        public async Task<List<Proposal>> GetByJobIdAsync(int jobId)
+        {
+            // retrieve data from job table S
+            return await _db.Proposal.Where(p => p.JobId == jobId).ToListAsync();
+        }
+        //  GetByIdAsync : JobId and JobSeekerId
+        public async Task<T> GetByIdAsync(int jobId, int jobSeekerId)
+        {
+            
+            if (typeof(T) == typeof(Proposal))
+            {
+                
+                var proposals = table as DbSet<Proposal>;
+                return await proposals.FirstOrDefaultAsync(x => x.JobId == jobId && x.JobSeekerId == jobSeekerId) as T;
+            }
 
+            return null;
+        }
         public async Task AddAsync(T entity)
         {
             await table.AddAsync(entity);

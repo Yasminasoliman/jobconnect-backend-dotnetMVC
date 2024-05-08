@@ -16,7 +16,9 @@ namespace jobconnect.Models
         public Job? Job { get; set; } //navigation to Job (That is applied for)
 
         [Required]
-        public string Proposal_date { get; set; }
+        public DateTime Proposal_date { get; set; }
+        [Required]
+        public bool accepted_by_emp { get; set; } = true;
 
         public string? brief_description { get; set; }
 

@@ -36,7 +36,7 @@ namespace jobconnect.Controllers
             return Ok(new{token});
         }
 
-        /*********************************************************** Register **********************************************************/
+  /*********************************************************** Register **********************************************************/
 
         [HttpPost("registeruser")]  // localhost:7163/api/Auth/registeruser
         public async Task<IActionResult> Register([FromBody] JobSeekerDto jobSeekerForRegisterDto)

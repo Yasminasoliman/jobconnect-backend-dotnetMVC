@@ -11,14 +11,18 @@ namespace jobconnect.Controllers
     public class EmployerController : Controller
     {
         private readonly IDataRepository<Job> _jobRepository;
-
-        public EmployerController(IDataRepository<Job> jobRepository)
+        private readonly IDataRepository<Proposal> _proposalRepository;
+        private readonly IDataRepository<JobSeeker> _jobSeekerRepository;
+        public EmployerController(IDataRepository<Job> jobRepository, IDataRepository<Proposal> proposalRepository, IDataRepository<JobSeeker> jobSeekerRepository)
         {
+            _proposalRepository = proposalRepository;
+            _jobSeekerRepository = jobSeekerRepository;
             _jobRepository = jobRepository;
         }
-  /*********************************************************** -CreateJobPost **********************************************************/
+        /*********************************************************** -CreateJobPost **********************************************************/
+             //update
         [HttpPost("CreateJobPost")]
-        public async Task<IActionResult> PostJob(JobDto jobDto)
+        public async Task<IActionResult> CreateJobPost(ShowJobDto jobDto) 
         {
             if (!ModelState.IsValid)
             {
@@ -34,23 +38,127 @@ namespace jobconnect.Controllers
                 industry = jobDto.industry,
                 salary_budget = jobDto.salary_budget,
                 No_of_position_required = jobDto.No_of_position_required,
-                EmpId = jobDto.EmpId,
-                Accepted_by_admin = false,
-                No_of_proposal_submitted = 0,
-                
+                EmpId = jobDto.EmpId,                        
             };
+            job.Post_creation_date = DateTime.UtcNow;
+            await _jobRepository.AddAsync(job);
+            await _jobRepository.Save();
 
-            //current date and time
-            job.Post_creation_date = DateTime.Now.ToString();
+            return Ok(job);
+        }
+        /*********************************************************** Getallsubmittedproposals **********************************************************/
 
-                        
-                await _jobRepository.AddAsync(job);
-                await _jobRepository.Save();
 
-                return Ok(job);
+        [HttpGet("Getallsubmittedproposals")]
+        public async Task<IActionResult> GetAllProposals()
+        {
+            var proposals = await _proposalRepository.GetAllAsync();
+            var proposalDtos = new List<ProposalDto>();
+
+            foreach (var proposal in proposals)
+            {
+                
+                var jobSeeker = await _jobSeekerRepository.GetByIdAsync(proposal.JobSeekerId);
+
+                proposalDtos.Add(new ProposalDto
+                {
+                    JobId = proposal.JobId,
+                    JobSeekerId = proposal.JobSeekerId,
+                    Proposal_date = proposal.Proposal_date,
+                    brief_description = proposal.brief_description,
+                    CV_file = proposal.CV_file,
+                    JobSeekerName = jobSeeker != null ? $"{jobSeeker.first_name} {jobSeeker.last_name}" : "Unknown"
+                });
+            }
+
+            return Ok(proposalDtos);
+        }
+        /*********************************************************** AcceptProposal **********************************************************/
+        [HttpPost("AcceptProposal")]
+        public async Task<IActionResult> AcceptProposal(int jobId, int jobSeekerId)
+        {
+
+               //search about proposal
+                var proposal = await _proposalRepository.GetByIdAsync(jobId, jobSeekerId);
+                if (proposal == null)
+                {
+                    return NotFound("Proposal not found.");
+                }
+
+                //delete proposal
+                var proposals = await _proposalRepository.GetByJobIdAsync(jobId);
+                foreach (var p in proposals)
+                {
+                    await _proposalRepository.DeleteAsync(p);
+                }
+
+                // save chanes ya radwa
+                if (!await _proposalRepository.Save())
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, $"Error when saving changes.");
+                }
+
+                // search in job table about No_of_position_required
+                var job = await _jobRepository.GetByIdAsync(proposal.JobId);
+                if (job == null)
+                {
+                    return NotFound("Job not found");
+                }
+
+                //If accepted, decrease 1 from No_of_position_required
+                job.No_of_position_required--;
+
+                //if No_of_position_required = 0 , delete job
+
+                if (job.No_of_position_required == 0)
+                {
+                    await _jobRepository.DeleteAsync(job);
+                }
+                else
+                {
+                    //update
+                    await _jobRepository.UpdateAsync(job);
+                }
+
+                // save chanes ya radwa
+                if (!await _jobRepository.Save())
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, $"Error saving changes to job.");
+                }
+
+                return Ok("Proposal Accepted successfully.");
+            
+
+        }
+        /*********************************************************** RejectProposal **********************************************************/
+
+        [HttpPost("RejectProposal")]
+        public async Task<IActionResult> RejectProposal(int jobId, int jobSeekerId)
+      
+        {
+            //search about proposal
+
+            var rejectpro = await _proposalRepository.GetByIdAsync(jobId, jobSeekerId);
+            if (rejectpro == null)
+            {
+                return NotFound("Proposal not found");
+            }
+            // if accepted_by_emp = false , delete proposal
+            rejectpro.accepted_by_emp = false;
+            await _proposalRepository.UpdateAsync(rejectpro);
+            await _proposalRepository.DeleteAsync(rejectpro);
+            await _proposalRepository.Save();
+
+            return Ok("Proposal Refused successfully");
         }
 
- /*********************************************************** review posts**********************************************************/
+
+
+
+
+
+
+
 
     }
 }

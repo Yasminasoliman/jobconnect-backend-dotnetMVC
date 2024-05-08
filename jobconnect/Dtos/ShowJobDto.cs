@@ -1,10 +1,8 @@
-﻿
-using System.ComponentModel.DataAnnotations;
-
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace jobconnect.Dtos
 {
-    public class JobDto
+    public class ShowJobDto
     {
 
 
@@ -25,20 +23,13 @@ namespace jobconnect.Dtos
         [Required]
         public string salary_budget { get; set; }
 
-        public int? No_of_proposal_submitted { get; set; }
-
         [Required]
         public int No_of_position_required { get; set; }
 
-        [Required]
-        public bool Accepted_by_admin { get; set; } = false;
-        public DateTime Post_creation_date { get; set; }
+ 
         public int EmpId { get; set; } // Employer_id
-        public string EmployerName { get; set; }
-        
-
+   
 
     }
-
 
 }
