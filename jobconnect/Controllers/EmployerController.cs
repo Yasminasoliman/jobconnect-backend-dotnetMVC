@@ -3,7 +3,6 @@ using jobconnect.Dtos;
 using jobconnect.Models;
 using Microsoft.AspNetCore.Mvc;
 
-
 //EmployerController about employers AND Post new jobs  posts by Radwa Khaled
 namespace jobconnect.Controllers
 {
