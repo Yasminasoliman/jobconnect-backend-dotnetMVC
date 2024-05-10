@@ -6,7 +6,6 @@ using jobconnect.Data;
 using System.Linq.Expressions;
 
 
-
 //JobSeekerController about Job Seekers by Radwa Khaled
 
 namespace jobconnect.Controllers
