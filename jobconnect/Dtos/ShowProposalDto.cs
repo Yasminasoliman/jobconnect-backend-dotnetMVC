@@ -4,7 +4,6 @@ namespace jobconnect.Dtos
 {
     public class ShowProposalDto
     {
-
             [Required]
             public int JobId { get; set; }
             [Required]

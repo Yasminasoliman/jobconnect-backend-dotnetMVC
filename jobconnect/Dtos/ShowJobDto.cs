@@ -5,7 +5,6 @@ namespace jobconnect.Dtos
     public class ShowJobDto
     {
 
-
         [Required]
         [StringLength(50)] //max length of 50 characters
         public string Job_title { get; set; }

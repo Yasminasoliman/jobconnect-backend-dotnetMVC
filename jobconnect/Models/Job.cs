@@ -15,9 +15,10 @@ namespace jobconnect.Models
 
         [Required]
         public string Job_type { get; set;} // A field to set if job is (part time, full time,or remote)
-
+        
+        
         [Required]
-        public DateTime Post_creation_date { get; set; }
+        public DateTime Post_creation_date { get; set; }//updaate Post_creation_date in data as DateTime
 
         [Required]
         public string location { get; set; }

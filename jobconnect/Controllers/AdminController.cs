@@ -4,7 +4,6 @@ using jobconnect.Models;
 using Microsoft.AspNetCore.Mvc;
 
 
-
 //AdminController about Manage employers (CRUD) AND Accept or refuse job posts by Radwa Khaled
 
 namespace jobconnect.Controllers
