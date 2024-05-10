@@ -17,7 +17,8 @@ builder.Services.AddSwaggerGen();
 
 //builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 builder.Services.AddScoped<jobconnect.Data.AuthRepository>();
-
+builder.Services.AddScoped<IDataRepository<Communication>, DataRepository<Communication>>();
+builder.Services.AddScoped<IDataRepository<Messages>, DataRepository<Messages>>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IDataRepository<User>, DataRepository<User>>();
 builder.Services.AddScoped<IDataRepository<JobSeeker>, DataRepository<JobSeeker>>();

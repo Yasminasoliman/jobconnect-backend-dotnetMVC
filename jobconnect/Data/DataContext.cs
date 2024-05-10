@@ -22,6 +22,7 @@ namespace jobconnect.Data
 
         public DbSet<Communication> Communication { get; set; }
 
+        public DbSet<Messages> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

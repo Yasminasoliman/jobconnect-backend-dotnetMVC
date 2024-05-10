@@ -52,6 +52,7 @@ namespace jobconnect.Migrations
             modelBuilder.Entity("jobconnect.Models.Employer", b =>
                 {
                     b.Property<int>("EmployerId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<string>("Company_description")
@@ -101,9 +102,8 @@ namespace jobconnect.Migrations
                     b.Property<int?>("No_of_proposal_submitted")
                         .HasColumnType("int");
 
-                    b.Property<string>("Post_creation_date")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Post_creation_date")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("industry")
                         .IsRequired()
@@ -145,7 +145,6 @@ namespace jobconnect.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("phone")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("JobSeekerId");
@@ -165,9 +164,11 @@ namespace jobconnect.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Proposal_date")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Proposal_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("accepted_by_emp")
+                        .HasColumnType("bit");
 
                     b.Property<string>("brief_description")
                         .HasColumnType("nvarchar(max)");

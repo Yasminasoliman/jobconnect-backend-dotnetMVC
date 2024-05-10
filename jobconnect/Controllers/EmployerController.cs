@@ -157,10 +157,8 @@ namespace jobconnect.Controllers
 
 
 
-
-
-
     }
+
 }
 
 

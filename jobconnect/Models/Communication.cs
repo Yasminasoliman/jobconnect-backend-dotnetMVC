@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace jobconnect.Models
@@ -8,17 +9,16 @@ namespace jobconnect.Models
         [Key]
         public int CommunicationId { get; set; }
 
-
-        //[ForeignKey("JobSeeker")]
+        [ForeignKey("JobSeeker")]
         public int JobSeekerId { get; set; }
         public JobSeeker JobSeeker { get; set; } // navigation to JobSeeker
 
-
-        //[ForeignKey("Employer")]
+        [ForeignKey("Employer")]
         public int EmployerId { get; set; }
         public Employer Employer { get; set; } // navigation to employer
+        public List<Messages> Messages { get; set; }
 
-        [Required]
-        public string Message { get; set; }
+
     }
 }
+

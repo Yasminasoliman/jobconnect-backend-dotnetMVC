@@ -1,19 +1,17 @@
-﻿namespace jobconnect.Dtos
- 
-{
-    namespace jobconnect.DTOs
-    {
-        public class CommunicationDTO
-        {
-            public int CommunicationId { get; set; }
+﻿using System.ComponentModel.DataAnnotations;
 
-            public int JobSeekerId { get; set; }
+namespace jobconnect.Dtos
+  {
+     public class CommunicationDto
+     {
+        [Required]
+        public int JobSeekerId { get; set; }
 
-            public int EmployerId { get; set; }
+        [Required]
+        public int EmployerId { get; set; }
 
-            public string Message { get; set; }
-        }
-    }
+     }
 }
+
     
 

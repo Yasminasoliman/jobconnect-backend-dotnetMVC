@@ -1,4 +1,6 @@
-﻿using jobconnect.Models;
+﻿using System.Linq.Expressions;
+using jobconnect.Dtos;
+using jobconnect.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace jobconnect.Data
@@ -12,6 +14,13 @@ namespace jobconnect.Data
         {
             _db = db;
             table = _db.Set<T>();
+            
+        }
+
+
+        public async Task<T> GetSingleAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await table.SingleOrDefaultAsync(predicate);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -23,24 +32,23 @@ namespace jobconnect.Data
         {
             return await table.FindAsync(id);
         }
+
         public async Task<List<Proposal>> GetByJobIdAsync(int jobId)
         {
-            // retrieve data from job table S
             return await _db.Proposal.Where(p => p.JobId == jobId).ToListAsync();
         }
-        //  GetByIdAsync : JobId and JobSeekerId
+
         public async Task<T> GetByIdAsync(int jobId, int jobSeekerId)
         {
-            
             if (typeof(T) == typeof(Proposal))
             {
-                
                 var proposals = table as DbSet<Proposal>;
                 return await proposals.FirstOrDefaultAsync(x => x.JobId == jobId && x.JobSeekerId == jobSeekerId) as T;
             }
 
             return null;
         }
+
         public async Task AddAsync(T entity)
         {
             await table.AddAsync(entity);
@@ -60,32 +68,46 @@ namespace jobconnect.Data
         {
             return await _db.SaveChangesAsync() > 0;
         }
-
-
-
-
-/*        public async Task<bool> AcceptJobPost(int jobId)
+        /*
+        public async Task<IEnumerable<T>> GetAllAsyncInclude(Expression<Func<T, bool>> criteria, params Expression<Func<T, object>>[] includes)
         {
-            var jobPost = await _db.JobPosts.FindAsync(jobId);
-            if (jobPost != null)
+            IQueryable<T> query = table;
+
+            if (includes != null)
             {
-                jobPost.Status = JobPostStatus.Accepted;
-                await _db.SaveChangesAsync();
-                return true;
+                query = includes.Aggregate(query, (current, include) => current.Include(include));
             }
-            return false;
+
+            if (criteria != null)
+            {
+                query = query.Where(criteria);
+            }
+
+            return await query.ToListAsync();
         }
 
-        public async Task<bool> RejectJobPost(int jobId)
+        public Expression<Func<T, bool>> And(Expression<Func<T, bool>> expr1, Expression<Func<T, bool>> expr2)
         {
-            var jobPost = await _db.JobPosts.FindAsync(jobId);
-            if (jobPost != null)
+            var paramExpr = Expression.Parameter(typeof(T));
+
+            var body = Expression.AndAlso(
+                Expression.Invoke(expr1, paramExpr),
+                Expression.Invoke(expr2, paramExpr)
+            );
+
+            return Expression.Lambda<Func<T, bool>>(body, paramExpr);
+        }
+        public async Task<IEnumerable<T>> GetAllfilterAsync(Expression<Func<T, bool>> filter = null)
+        {
+            IQueryable<T> query = table;
+
+            if (filter != null)
             {
-                jobPost.Status = JobPostStatus.Rejected;
-                await _db.SaveChangesAsync();
-                return true;
+                query = query.Where(filter);
             }
-            return false;
+
+            return await query.ToListAsync();
         }*/
+
     }
 }
