@@ -1,4 +1,5 @@
-﻿namespace jobconnect.Models
+﻿using System.ComponentModel.DataAnnotations;
+namespace jobconnect.Models
 {
     public class SavedJobs
     {

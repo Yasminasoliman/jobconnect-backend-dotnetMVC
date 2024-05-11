@@ -4,6 +4,7 @@ using jobconnect.Dtos;
 using jobconnect.Models;
 using jobconnect.Data;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
 
 
 
@@ -94,7 +95,7 @@ namespace jobconnect.Controllers
         }
 
         /*********************************************************** SaveJob **********************************************************/
-
+       // [Authorize(Roles = "JobSeeker")]
         [HttpPost("SaveJob")]
         public async Task<IActionResult> SaveJob(SaveJobDto saveJobDto)
         {                           
@@ -117,8 +118,9 @@ namespace jobconnect.Controllers
 
                 return Ok("Job saved successfully");            
         }
+
         /*********************************************************** UnsavedJob **********************************************************/
-        
+       // [Authorize(Roles = "JobSeeker")]
         [HttpPost("UnsavedJob")]
         public async Task<IActionResult> UnsavedJob(SaveJobDto saveJobDto)
         {
@@ -140,26 +142,21 @@ namespace jobconnect.Controllers
 
 
         /*********************************************************** GetAllSavedJobs **********************************************************/
-
-
+        //[Authorize(Roles = "JobSeeker")]
         [HttpGet("GetAllSavedJobs/{jobSeekerId}")]
         public async Task<IActionResult> GetAllSavedJobs(int jobSeekerId)
         {
        
             var allSavedJobs = await _savedJobsRepository.GetAllAsync();
-
-            
+           
             var savedJobs = allSavedJobs.Where(x => x.JobSeekerId == jobSeekerId);
-
         
             if (savedJobs == null || !savedJobs.Any())
             {
                 return NotFound("No saved jobs found for this user");
             }
-
    
             var savedJobIds = savedJobs.Select(x => x.JobId).ToList();
-
             return Ok(savedJobIds);
         }
 

@@ -1,6 +1,7 @@
 ﻿using jobconnect.Data;
 using jobconnect.Dtos;
 using jobconnect.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -49,7 +50,7 @@ namespace jobconnect.Controllers
         }
         /*********************************************************** Getallsubmittedproposals **********************************************************/
 
-
+       // [Authorize(Roles = "Employer")]
         [HttpGet("Getallsubmittedproposals")]
         public async Task<IActionResult> GetAllProposals()
         {
@@ -75,6 +76,7 @@ namespace jobconnect.Controllers
             return Ok(proposalDtos);
         }
         /*********************************************************** AcceptProposal **********************************************************/
+       // [Authorize(Roles = "Employer")]
         [HttpPost("AcceptProposal")]
         public async Task<IActionResult> AcceptProposal(int jobId, int jobSeekerId)
         {
@@ -132,7 +134,7 @@ namespace jobconnect.Controllers
 
         }
         /*********************************************************** RejectProposal **********************************************************/
-
+        //[Authorize(Roles = "Employer")]
         [HttpPost("RejectProposal")]
         public async Task<IActionResult> RejectProposal(int jobId, int jobSeekerId)
       

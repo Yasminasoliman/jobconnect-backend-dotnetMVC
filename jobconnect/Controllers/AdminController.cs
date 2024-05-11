@@ -1,6 +1,7 @@
 ﻿using jobconnect.Data;
 using jobconnect.Dtos;
 using jobconnect.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -24,8 +25,8 @@ namespace jobconnect.Controllers
             _jobRepository = jobRepository;
             _authRepository = authRepository;
         }
-  /*********************************************************** CreateEmployer **********************************************************/
-
+        /*********************************************************** CreateEmployer **********************************************************/
+        //[Authorize(Roles = "Admin")]
         [HttpPost("CreateEmployer")]
         public async Task<IActionResult> CreateEmployer(EmployerDto employerDto)
         {
@@ -66,7 +67,6 @@ namespace jobconnect.Controllers
 
             return Ok($"Employer created successfully. Username: {user.Username} , Password: {employerDto.Password}");
         }
-
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
@@ -76,8 +76,11 @@ namespace jobconnect.Controllers
             }
         }
 
-  /*********************************************************** GetAllEmployers **********************************************************/
+
+        /*********************************************************** GetAllEmployers **********************************************************/
+        //[Authorize(Roles = "Admin")]
         [HttpGet("GetAllEmployers")]
+
         public async Task<IActionResult> GetAllEmployers()
         {
             IEnumerable<User> users = await _userRepository.GetAllAsync();
@@ -100,7 +103,8 @@ namespace jobconnect.Controllers
             return Ok(empFullDataList);
         }
 
-  /*********************************************************** GetEmployerById **********************************************************/
+        /*********************************************************** GetEmployerById **********************************************************/
+        //[Authorize(Roles = "Admin")]
         [HttpGet("GetEmployerById/{id}")]
         public async Task<IActionResult> GetEmployerById(int id)
         {
@@ -119,8 +123,8 @@ namespace jobconnect.Controllers
             empFullData.mainaddress = employer.mainaddress;
             return Ok(empFullData);
         }
-  /*********************************************************** UpdateEmployerById **********************************************************/
-
+        /*********************************************************** UpdateEmployerById **********************************************************/
+        //[Authorize(Roles = "Admin")]
         [HttpPut("UpdateEmployer/{id}")]
         public async Task<IActionResult> UpdateEmployer(int id, EmployerDto employerDto)
         {
@@ -158,9 +162,9 @@ namespace jobconnect.Controllers
 
                 return Ok("Employer updated successfully.");
         }
-  /*********************************************************** DeleteEmployerById **********************************************************/
+        /*********************************************************** DeleteEmployerById **********************************************************/
 
-  
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("DeleteEmployer/{id}")]
         public async Task<IActionResult> DeleteEmployer(int id)
         {
@@ -210,7 +214,7 @@ namespace jobconnect.Controllers
             return Ok(jobDtos);
         }
         /*********************************************************** Accept job posts  **********************************************************/
-
+        //[Authorize(Roles = "Admin")]
         [HttpPost("accept-job/{jobId}")]
         public async Task<IActionResult> AcceptJob(int jobId)
         {
@@ -225,12 +229,10 @@ namespace jobconnect.Controllers
                 await _jobRepository.UpdateAsync(job);
                 await _jobRepository.Save();
 
-                return Ok("Job accepted successfully");
-           
-
+                return Ok("Job accepted successfully");          
         }
- /*********************************************************** refuse job posts  **********************************************************/
-
+        /*********************************************************** refuse job posts  **********************************************************/
+        //[Authorize(Roles = "Admin")]
         [HttpPost("refuse-job/{jobId}")]
         public async Task<IActionResult> RefuseJob(int jobId)
         {
