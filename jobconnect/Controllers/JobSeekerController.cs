@@ -7,7 +7,6 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
 
 
-
 //JobSeekerController about Job Seekers by Radwa Khaled
 
 namespace jobconnect.Controllers
